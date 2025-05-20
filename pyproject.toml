@@ -1,0 +1,75 @@
+## Estructura básica de un pyproject.toml para un paquete Python siguiendo la PEP 518 (construcción)/ PEP 621 (metadatos)
+
+[build-system]
+requires = ["setuptools>=61.0", "wheel"] # Dependencias para construir el paquete
+build-backend = "setuptools.build_meta" # Le dice a pip qué función usar de setuptools para construir el paquete.
+backend-path = ["."] # Usualmente necesario si setuptools no está en el path por defecto.
+
+[project]
+name = "nombre repo" # IMPORTANTE: Nombre de tu paquete (lo que importarías).
+version = "0.1.0" # Versión inicial de tu paquete
+authors = [
+    { name = "Iker Etxebarria", email = "ietxebarriao@ayesa.com" },
+]
+description = "Breve descripción de una o dos frases sobre qué trata el proyecto, su objetivo principal y el tipo de ciencia que se desarrolla." # Tomado de tu README
+readme = "README.md" # Especifica que el README.md contiene la descripción larga
+requires-python = ">=3.11" # Basado en tu environment.yml
+license = { file = "LICENSE" } # Asumiendo MIT, cambia si usas otra. Deberías tener un archivo LICENSE.
+
+# Palabras clave para ayudar a encontrar tu paquete si se publica (opcional)
+# keywords = ["ciencia", "analisis de datos", "nombre_del_campo_cientifico"]
+
+# Ayudan a categorizar tu paquete en PyPI
+classifiers = [
+    "Development Status :: 3 - Alpha", # O "4 - Beta", "5 - Production/Stable" según avance
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License", # Asegúrate que coincida con tu licencia real
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+]
+
+# Dependencias DE EJECUCIÓN de tu paquete en src/
+# Estas son las bibliotecas que tu código en src/ IMPORTA directamente
+# La diferencia con environment.yml:
+# - environment.yml es para TODO el entorno de DESARROLLO (incluye jupyter, etc.)
+# - pyproject.toml ([project].dependencies) es para las dependencias de TU CÓDIGO en src/
+dependencies = [
+    "numpy>=1.20",
+    "scipy>=1.7",
+    "pandas>=1.3",
+    "matplotlib>=3.4", # Si tu paquete en src/ genera figuras directamente
+    # "seaborn>=0.11", # Si tu paquete en src/ usa seaborn directamente
+    # "requests",      # Si tu paquete en src/ hace peticiones HTTP
+    # "openpyxl",      # Si tu paquete en src/ lee/escribe Excel directamente
+    # Añade aquí solo lo que tu CÓDIGO EN SRC realmente necesita para funcionar.
+    # No pongas aquí jupyterlab, ipykernel, etc. esas son herramientas de desarrollo.
+]
+
+[project.urls] # Opcional: URLs del proyecto
+"Homepage" = "https://github.com/tu_usuario/tu_proyecto" # Cambia por tu URL real
+# "Documentation" = "https://ruta-a-tu-documentacion.com"
+
+# Configuración específica para setuptools para encontrar tu paquete dentro de src/
+[tool.setuptools.packages.find]
+where = ["src"]  # Le dice a setuptools que los paquetes fuente están en la carpeta 'src'
+# include = ["mi_paquete*"] # Puedes ser más específico si tienes múltiples paquetes en src
+# exclude = []
+namespaces = false
+
+# (Opcional) Dependencias de desarrollo/testeo.
+# Estas no se instalan por defecto cuando alguien instala tu paquete,
+# pero puedes instalarlas con `pip install .[dev]` o `pip install .[test]`
+[project.optional-dependencies]
+test = [
+"pytest>=6.0",
+"pytest-cov",
+]
+dev = [
+"black",    # Formateador de código
+"flake8",   # Linter
+"mypy",     # Type checker
+# Puedes incluir aquí también las dependencias de test:
+"mi_paquete[test]", # Esto instalaría las dependencias de la sección [test]
+]
