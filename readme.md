@@ -1,6 +1,6 @@
-# Proyecto Científico: [Nombre de tu Proyecto]
+# Proyecto: Framework QUBO 
 
-Breve descripción de una o dos frases sobre qué trata el proyecto, su objetivo principal y el tipo de ciencia que se desarrolla.
+Framework para implementar hamiltonianos derivados de modelos QUBO y ejecutarlos de manera cuántica.
 
 ## Estructura del Repositorio
 
@@ -29,12 +29,12 @@ Antes de empezar, asegúrate de tener instalado:
 
 1.  **Clona el repositorio (elige licencia):**
     ```bash
-    git clone https://github.com/tu_usuario/tu_proyecto.git
+    git clone https://github.com/IkerEtxeQ/qubo-optimization-wrapper.git
     cd tu_proyecto
     ```
 2.  **Rellena la plantilla**
 
-    1. environment.yml: Poner nombre al entorno env -> mi-proyecto-env
+    1. environment.yml: Poner nombre al entorno env -> qubo-framework-env
     2. pyproject.toml:  Poner nombre [project].name al paquete de código fuente, lo que se importara. 
                         Rellenar metadatos.
     3. readme.md: Rellenar datos.
@@ -44,7 +44,7 @@ Antes de empezar, asegúrate de tener instalado:
     *   **Usando Conda (`environment.yml`):**
         ```bash
         conda env create -f environment.yml
-        conda activate nombre-del-entorno-definido-en-yml
+        conda activate qubo-framework-env
         ```
 
 3. **Instalar paquete src en modo editable ()**
@@ -68,7 +68,7 @@ Describe brevemente qué tipo de resultados se generan y dónde se guardan.
 
 ## Licencia
 
-Este proyecto está bajo la Licencia [Nombre de la Licencia - ej. MIT, Apache 2.0]. Ver el archivo `LICENSE` para más detalles.
+Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
 
 ## Contacto
 
