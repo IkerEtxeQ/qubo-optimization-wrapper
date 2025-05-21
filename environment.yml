@@ -1,4 +1,4 @@
-name: mi-proyecto-env  # Nombre de tu entorno
+name: qubo-optimization-wrapper-env  # Nombre de tu entorno
 
 # Almacenes de paquetes. Al hacer "conda install numpy" conda busca ese paquete en estos canales, empezando por el primero.
 # Se pueden añadir más canales o cambiar el orden según las necesidades.
@@ -10,14 +10,22 @@ dependencies:
   - python=3.11    
   - pip           # Para instalar paquetes desde PyPI: es el repositorio oficial de software de terceros para Python.  Es un índice público y el lugar principal donde los desarrolladores de Python publican sus paquetes y bibliotecas para que otros puedan usarlos
 
-  # Núcleo científico
-  - numpy>=1.20
-  - scipy>=1.7
-  - pandas>=1.3
+  # ---- HERRAMIENTAS DE CONSTRUCCIÓN ESENCIALES ----
+  - setuptools>=61.0 
+  - wheel            
+
+  #  Núcleo Científico y Estructuras de Datos 
+  - numpy>=1.20 
+  - sympy  
+  - scipy>=1.7    
+  - pandas>=1.3   
+  - networkx      
+
+  # QUBO      
+  - dwave-neal    
 
   # Visualización
   - matplotlib>=3.4
-  - seaborn>=0.11
 
   # Notebooks y utilidades
   - jupyterlab>=3.0   
@@ -31,4 +39,4 @@ dependencies:
 
   - pip:
     # Aquí puedes listar paquetes que solo están en PyPI o versiones específicas de PyPI
-    # - paquete-de-pypi==1.0.0
+    - pyqubo>=0.5   

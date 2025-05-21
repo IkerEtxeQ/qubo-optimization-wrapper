@@ -43,6 +43,7 @@ Antes de empezar, asegúrate de tener instalado:
 
     *   **Usando Conda (`environment.yml`):**
         ```bash
+        conda init powershell
         conda env create -f environment.yml
         conda activate qubo-framework-env
         ```
@@ -54,7 +55,7 @@ Antes de empezar, asegúrate de tener instalado:
 *       Despues de ejecutar esto, se podran importar modulos dentro de la carpeta src desde cualquier otro script o notebook del entrono con import mi_modulo. 
 *       Refleja los cambios que se hagan en src instantaneamente sin necesidad de reinstalar.
 
-## Distribuir software con el código fuente compilado.
+## Distribuir software.
 
     `` python -m build --wheel´´
 *   Crea un wheel de src: distribución binaria precompilada.
