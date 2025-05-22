@@ -1,113 +1,53 @@
 ﻿# start_env.ps1 🚀
+# Script para configurar el entorno Conda y ejecutar la verificación.
 
 $envFile = "environment.yml"
 $ErrorActionPreference = "Stop" # Salir del script si un comando falla (excepto donde se maneje explícitamente)
 
+# Función auxiliar para intentar obtener el PATH de Python global/base (ya no se usa si nbstripout se elimina)
+# function Get-GlobalPythonPath { ... } # Podrías eliminar esta función si no la necesitas para nada más
+
 try {
     # --- Sección 1: Configuración del Entorno Conda ---
     Write-Host "--- Configurando Entorno Conda ---" -ForegroundColor Yellow
+    $script:envName = $null # Definir a nivel de script para accesibilidad si fuera necesario
 
-    # 📄 Leer nombre del entorno desde environment.yml
     $envNameLine = Select-String -Path $envFile -Pattern "^name:\s*(.+)$"
     if (-not $envNameLine) {
         Write-Error "❌ No se pudo encontrar el nombre del entorno en '$envFile'"
-        exit 1 # Salir explícitamente aquí ya que $ErrorActionPreference="Stop" podría no cubrir esto
+        exit 1
     }
-    $envName = $envNameLine.Matches[0].Groups[1].Value.Trim()
-    Write-Host "📦 Nombre del entorno Conda: '$envName'"
+    $script:envName = $envNameLine.Matches[0].Groups[1].Value.Trim()
+    Write-Host "📦 Nombre del entorno Conda: '$($script:envName)'"
 
-    # 🔍 Comprobar si el entorno existe
-    $envExists = conda env list | Select-String -Pattern "^\s*$($envName)\s" # Corregido: usar $envName correctamente entrecomillado
-
+    $envExists = conda env list | Select-String -Pattern "^\s*$($script:envName)\s" -ErrorAction SilentlyContinue
     if (-not $envExists) {
-        Write-Host "⚠️ Entorno '$envName' no encontrado. Creando desde '$envFile'..."
+        Write-Host "⚠️ Entorno '$($script:envName)' no encontrado. Creando desde '$envFile'..."
         conda env create -f $envFile
-        # $LASTEXITCODE se comprueba automáticamente por $ErrorActionPreference="Stop"
-        Write-Host "✅ Entorno '$envName' creado." -ForegroundColor Green
-    }
-    else {
-        Write-Host "ℹ️ Entorno '$envName' ya existe. Actualizando desde '$envFile'..."
-        conda env update --name $envName --file $envFile --prune # Usar --name y --file para claridad
-        Write-Host "✅ Entorno '$envName' actualizado." -ForegroundColor Green
+        Write-Host "✅ Entorno '$($script:envName)' creado." -ForegroundColor Green
+    } else {
+        Write-Host "ℹ️ Entorno '$($script:envName)' ya existe. Actualizando desde '$envFile'..."
+        conda env update --name $script:envName --file $envFile --prune
+        Write-Host "✅ Entorno '$($script:envName)' actualizado." -ForegroundColor Green
     }
 
-    # ⚙️ Activar entorno
-    Write-Host "🧪 Activando entorno Conda: '$envName'..."
-    # Nota: `conda activate` en un script de PS tiene matices.
-    # Su efecto principal es modificar el PATH para esta sesión de PowerShell.
-    # Los comandos subsecuentes DEBERÍAN usar los ejecutables del entorno activado.
-    conda activate $envName
-    Write-Host "✅ Entorno '$envName' activado (para esta sesión de script)." -ForegroundColor Green
+    Write-Host "🧪 Activando entorno Conda: '$($script:envName)' (para operaciones del script)..."
+    conda activate $script:envName
+    Write-Host "✅ Entorno '$($script:envName)' activado." -ForegroundColor Green
 
-    # --- Sección 2: Verificación y Instalación del Proyecto ---
-    Write-Host "--- Verificando e Instalando Proyecto ---" -ForegroundColor Yellow
-
-    # ✅ Ejecutar la verificación del entorno
+    # --- Sección 2: Verificación del Entorno y Ejecución de Tareas del Proyecto ---
+    # Asumimos que tu proyecto se instala a través de `environment.yml` con `-e .` si es necesario.
+    Write-Host "--- Verificando Entorno y Ejecutando Tareas del Proyecto ---" -ForegroundColor Yellow
+    
     Write-Host "🐍 Ejecutando script de verificación: env/verify_env.py..."
-    python env/verify_env.py # Asume que `python` ahora es el del entorno activado
+    python env/verify_env.py # Usa el python del entorno activado
     Write-Host "✅ Verificación del entorno completada." -ForegroundColor Green
-
-    # 🔄 Instalar el proyecto en modo editable
-    Write-Host "🛠️ Instalando el proyecto en modo editable (pip install -e .)..."
-    pip install -e . # Asume que `pip` ahora es el del entorno activado
-    Write-Host "✅ Proyecto instalado en modo editable." -ForegroundColor Green
-
-
-    # --- Sección 3: Configuración de nbstripout ---
-    Write-Host "--- Configurando nbstripout para Git ---" -ForegroundColor Yellow
-
-    # 1. Verificar nbstripout (ahora que el entorno está activo y el proyecto instalado)
-    Write-Host "Verificando nbstripout..."
-    if (-not (Get-Command nbstripout -ErrorAction SilentlyContinue)) {
-        Write-Warning "nbstripout no encontrado en el entorno '$envName'."
-        Write-Warning "Asegúrate de que 'nbstripout' esté listado como dependencia en '$envFile' (sección pip)"
-        Write-Warning "o instálalo manualmente en el entorno activado: pip install nbstripout"
-        # Podrías optar por salir si nbstripout es crucial:
-        # throw "nbstripout es necesario y no se encontró."
-    } else {
-        Write-Host "  nbstripout encontrado:" -ForegroundColor Green
-        nbstripout --version # Se ejecutará la versión del entorno activado
-    }
-
-    # 2. Configurar filtros de Git
-    Write-Host "Configurando filtros Git para nbstripout..."
-    # `nbstripout --install` modifica .git/config local al repo
-    nbstripout --install
-    Write-Host "  Configuración de Git para nbstripout completada o ya existente." -ForegroundColor Green
-
-    # 3. Asegurar .gitattributes
-    Write-Host "Asegurando .gitattributes..."
-    $gitattributesPath = ".gitattributes"
-    $expectedContent = @(
-        "*.ipynb filter=nbstripout diff=nbstripout",
-        "*.zpln filter=nbstripout"
-    )
-
-    $currentContent = if (Test-Path $gitattributesPath) { Get-Content $gitattributesPath -ErrorAction SilentlyContinue } else { $null }
-
-    if ($null -eq $currentContent -or (Compare-Object -ReferenceObject $expectedContent -DifferenceObject $currentContent)) {
-        Set-Content -Path $gitattributesPath -Value ($expectedContent | Out-String) -Encoding utf8NoBOM
-        Write-Host "  .gitattributes creado/actualizado." -ForegroundColor Green
-        $gitattributesStatus = git status --porcelain -- $gitattributesPath
-        if ($gitattributesStatus -match "^\?\? " -or $gitattributesStatus -match "^ M ") {
-            Write-Warning "IMPORTANTE: '.gitattributes' ha sido modificado. Por favor, añádelo a Git: git add .gitattributes"
-        }
-    } else {
-        Write-Host "  .gitattributes ya está configurado correctamente." -ForegroundColor Green
-    }
-
-    # 4. Verificar configuración final de nbstripout
-    Write-Host "Verificando configuración final con 'nbstripout --status'..."
-    if (Get-Command nbstripout -ErrorAction SilentlyContinue) {
-        nbstripout --status
-    }
-
-    Write-Host "-----------------------------------------------------"
-    Write-Host "Notas de nbstripout:"
-    Write-Host " - Si '.gitattributes' fue modificado, no olvides hacer 'git add .gitattributes' y 'git commit'."
-    Write-Host " - Limpia notebooks existentes si es necesario: Get-ChildItem -Path . -Include '*.ipynb','*.zpln' -Recurse | ForEach-Object { nbstripout \$_.FullName }"
-    Write-Host "   Luego: git add . && git commit -m 'Clean existing notebooks'"
-    Write-Host "nbstripout configurado." -ForegroundColor Green
+    
+    # Si tenías `pip install -e .` aquí y no lo moviste a environment.yml,
+    # podrías necesitarlo de vuelta. Pero es mejor práctica en environment.yml.
+    # Write-Host "🛠️ Instalando el proyecto en modo editable (si no está en environment.yml)..."
+    # pip install -e . 
+    # Write-Host "✅ Proyecto instalado en modo editable." -ForegroundColor Green
 
 }
 catch {
@@ -119,4 +59,6 @@ catch {
     exit 1
 }
 
-Write-Host "🎉 Script de inicio de entorno y configuración completado." -ForegroundColor Magenta
+Write-Host "-----------------------------------------------------" -ForegroundColor Cyan
+Write-Host "🎉 Script de inicio de entorno y verificación completado." -ForegroundColor Magenta
+Write-Host "-----------------------------------------------------" -ForegroundColor Cyan

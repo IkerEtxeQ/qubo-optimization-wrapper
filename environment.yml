@@ -30,8 +30,7 @@ dependencies:
 
   # Notebooks y utilidades
   - jupyterlab>=3.0   
-  - ipykernel
-  - nbstripout>=0.8         
+  - ipykernel      
 
   # Otras bibliotecas comunes (ejemplos, añade las que necesites)
   # - scikit-learn    # Si haces algo de modelado estadístico/ML ligero
@@ -43,3 +42,5 @@ dependencies:
     # Aquí puedes listar paquetes que solo están en PyPI o versiones específicas de PyPI
     - pyqubo>=0.5   
     - toml  
+    - nbstripout>=0.8   
+    - -e .

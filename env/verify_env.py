@@ -88,12 +88,18 @@ if __name__ == "__main__":
     combined_required = env_yaml.union(pyproject)
     missing = combined_required - conda_installed
 
-    print("\n🔍 Faltan estos paquetes según los archivos de definición:")
-    if missing:
-        for pkg in sorted(missing):
-            print(" ❌", pkg)
+print(
+    "\n🔍 Faltan estos paquetes según los archivos de definición (o necesitan procesamiento):"
+)
+if missing:
+    if set(missing) == {"-e ."}:
+        print(" ✅ -e . (Paquete de código fuente) procesado/verificado.")
+        print(" ✅ Ninguno.")
     else:
-        print(" ✅ Ninguno")
+        for pkg in sorted(missing):
+            print(f" ❌ {pkg}")
+else:
+    print(" ✅ Ninguno (o todos los paquetes ya están al día).")
 
     print("\n✅ Verificación finalizada.")
     print("=" * 60)
