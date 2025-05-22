@@ -1,4 +1,4 @@
-name: qubo-optimization-wrapper-env  # Nombre de tu entorno
+name: qubo-optimization-wrapper-env
 
 # Almacenes de paquetes. Al hacer "conda install numpy" conda busca ese paquete en estos canales, empezando por el primero.
 # Se pueden añadir más canales o cambiar el orden según las necesidades.
@@ -19,7 +19,8 @@ dependencies:
   - sympy  
   - scipy>=1.7    
   - pandas>=1.3   
-  - networkx      
+  - networkx
+    
 
   # QUBO      
   - dwave-neal    
@@ -29,7 +30,8 @@ dependencies:
 
   # Notebooks y utilidades
   - jupyterlab>=3.0   
-  - ipykernel         
+  - ipykernel
+  - nbstripout>=0.8         
 
   # Otras bibliotecas comunes (ejemplos, añade las que necesites)
   # - scikit-learn    # Si haces algo de modelado estadístico/ML ligero
@@ -40,3 +42,4 @@ dependencies:
   - pip:
     # Aquí puedes listar paquetes que solo están en PyPI o versiones específicas de PyPI
     - pyqubo>=0.5   
+    - toml  

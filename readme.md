@@ -8,6 +8,7 @@ Una breve explicación de las carpetas principales:
 *   `config/`: Para archivos de configuración.
 *   `data/`: Contiene los datos de entrada necesarios para el proyecto.
 *   `docs/`: (Si existe) Documentación detallada.
+*   `env/`: Scripts de activación de entorno.
 *   `notebooks/`: Scripts para automatizar tareas (ej. descarga de datos, preprocesamiento).
 *   `results/`: Figuras, tablas y otros resultados generados.
 *   `scripts/`: Para archivos y utilidades que no son parte del nucleo lógico de src pero que son importantes para el flujo del trabajo (mismo rol que main).
@@ -40,20 +41,37 @@ Antes de empezar, asegúrate de tener instalado:
     3. readme.md: Rellenar datos.
     
 2.  **Crea y activa el entorno:**
+    Opción1:
+    *   **Usando script**
+        Abre una terminal en la raiz del proyecto:
+        ``.\env\start_env.ps1´´
+        Crea el entorno (si no existe, si existe lo actualiza) y verifica que todos los paquetes espeficados en el environment.yml y pyproject.toml estan instalados.
+        Instala código fuente: Para poder importar los módulos dentro de src.
+        ** Si se hacen modificaciones al archivo start_env.ps1 no olvidar guardarlo en la codificación utf-8 con BOM para los acentos y los emojis. En VSCode barra inferior UTF8 -> Guardar codificación -> UTF-8 with BOM.
 
-    *   **Usando Conda (`environment.yml`):**
+    Opción 2:
+    *   **Manualmente**
+        Abre una terminal en la raiz del proyecto:
         ```bash
         conda init powershell
         conda env create -f environment.yml
         conda activate qubo-framework-env
         ```
-
-3. **Instalar paquete src en modo editable ()**
-
-    *   **Usa `pyproject.toml`:**
+    * **Instalar paquete src en modo editable ()**
+      **Usa `pyproject.toml`:**
         `` pip install -e .´´ 
-*       Despues de ejecutar esto, se podran importar modulos dentro de la carpeta src desde cualquier otro script o notebook del entrono con import mi_modulo. 
-*       Refleja los cambios que se hagan en src instantaneamente sin necesidad de reinstalar.
+        Despues de ejecutar esto, se podran importar modulos dentro de la carpeta src desde cualquier otro script o notebook del entrono con import mi_modulo. 
+        Refleja los cambios que se hagan en src instantaneamente sin necesidad de reinstalar.
+
+## Integrar nuevas librerías
+
+Si estoy desarrollando y necesito hacer uso de una librería que no esta en el entorno:
+    1. Si mi código esta dentro de src: 
+        * Ejecutar en terminal: ``conda install nombre_pkg´´ si solo esta en PyPI ``pip install nombre_pkg´´
+        * Añadir nueva librería a pyproject.toml y environment.yml.
+    2. Si mi código esta fuera de src.
+        * Ejecutar en terminal: ``conda install nombre_pkg´´ si solo esta en PyPI ``pip install nombre_pkg´´
+        * Añadir nueva librería a environment.yml.
 
 ## Distribuir software.
 
