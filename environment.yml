@@ -7,7 +7,7 @@ channels:
   - defaults      # Canal oficial de Anaconda. Contiene paquetes de Anaconda y algunos de los más populares.
 
 dependencies:
-  - python=3.11    
+  - python=3.10    
   - pip           # Para instalar paquetes desde PyPI: es el repositorio oficial de software de terceros para Python.  Es un índice público y el lugar principal donde los desarrolladores de Python publican sus paquetes y bibliotecas para que otros puedan usarlos
 
   # ---- HERRAMIENTAS DE CONSTRUCCIÓN ESENCIALES ----
@@ -23,7 +23,8 @@ dependencies:
     
 
   # QUBO      
-  - dwave-neal    
+  - dwave-ocean-sdk>=3.3.0    
+  - dimod
 
   # Visualización
   - matplotlib>=3.4

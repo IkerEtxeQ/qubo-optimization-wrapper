@@ -13,18 +13,18 @@ authors = [
 ]
 description = "Framework para implementar hamiltonianos derivados de modelos QUBO y ejecutarlos de manera cuántica." # Tomado de tu README
 readme = "README.md" # Especifica que el README.md contiene la descripción larga
-requires-python = ">=3.11" # Basado en tu environment.yml
+requires-python = ">=3.10" # Basado en tu environment.yml
 license = { file = "LICENSE" } # Asumiendo MIT, cambia si usas otra. Deberías tener un archivo LICENSE.
 
 # Palabras clave para ayudar a encontrar tu paquete si se publica (opcional)
 # keywords = ["ciencia", "analisis de datos", "nombre_del_campo_cientifico"]
 
-# Ayudan a categorizar tu paquete en PyPI
+
 classifiers = [
-    "Development Status :: 3 - Alpha", # O "4 - Beta", "5 - Production/Stable" según avance
+    "Development Status :: 3 - Alpha",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
-    "License :: OSI Approved :: MIT License", # Asegúrate que coincida con tu licencia real
+    "License :: MIT License", 
     "Operating System :: windows",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Quantum Computing",
@@ -37,8 +37,8 @@ classifiers = [
 # - pyproject.toml ([project].dependencies) es para las dependencias de TU CÓDIGO en src/
 dependencies = [
     "numpy>=1.20",
-    "networkx>=2.5", 
-    "dwave-neal>=0.5",
+    "networkx>=2.5",
+    "dwave-ocean-sdk>=3.3.0",
     "sympy>=1.8",
     "pyqubo>=1.0",
     "ipython>=7.0",
@@ -49,13 +49,12 @@ dependencies = [
 ]
 
 [project.urls] # Opcional: URLs del proyecto
-"Homepage" = "https://github.com/tu_usuario/tu_proyecto" # Cambia por tu URL real
-# "Documentation" = "https://ruta-a-tu-documentacion.com"
+"Homepage" = "https://github.com/IkerEtxeQ/qubo-optimization-wrapper" 
 
 # Configuración específica para setuptools para encontrar tu paquete dentro de src/
 [tool.setuptools.packages.find]
 where = ["src"]  # Le dice a setuptools que los paquetes fuente están en la carpeta 'src'
-# include = ["mi_paquete*"] # Puedes ser más específico si tienes múltiples paquetes en src
+include = ["qubo_optimization_wrapper*"] # Puedes ser más específico si tienes múltiples paquetes en src
 # exclude = []
 namespaces = false
 
