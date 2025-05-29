@@ -1,4 +1,4 @@
-from .backends.dwave_hardware_backend import DWaveHardwareBackend
+from .backends.qpu_backend import QPUBackend
 from .backends.simulated_backend import SimulatedBackend
 from qubo_optimization_wrapper.backend_handler.backends.backend_interface import Backend
 
@@ -7,14 +7,11 @@ class BackendFactory:
     def __init__(self):
         pass
 
-    def create_backend(self, backend_type: str, backend_config) -> Backend:
+    def create_backend(self, backend_type: str) -> Backend:
         if backend_type == "dwave_qpu":
-            return DWaveHardwareBackend(
-                backend_config,
-                client_type="qpu",
-            )
+            return QPUBackend()
         elif backend_type == "dwave_hybrid":
-            return DWaveHardwareBackend(backend_config, client_type="hybrid")
+            return QPUBackend()
         elif backend_type == "simulated_annealing":
             return SimulatedBackend()
         else:

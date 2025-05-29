@@ -1,6 +1,6 @@
 from qubo_optimization_wrapper.backend_handler.execution_backend import ExecutionBackend
-from qubo_optimization_wrapper.visualization.v_decode_sampleset import min_energy_result
 from qubo_optimization_wrapper.hamiltonian_creation.hamiltonian import Hamiltonian
+
 
 # from dwave.cloud import Client
 from pyqubo import Binary, Placeholder
@@ -22,12 +22,11 @@ lambda_dict = {"lambda_1": 1, "lambda_2": 1}
 
 hamiltonian = Hamiltonian(H_1R, H_2R, lambda_dict)
 
-hamiltonian._show_QMatrix()
+hamiltonian.show_QMatrix()
+hamiltonian.show_all_hamiltonian_solutions_energy()
 
 backend = ExecutionBackend(hamiltonian, "simulated_annealing")
 # backend.get_info_backend_parameters()
 
 backend.submit_job(num_reads=10)
-min_energy_result(backend.get_decoded_sampleset())
-
-backend.show_sampleset_distribution_energies()
+print(backend.get_decoded_sampleset())

@@ -1,29 +1,22 @@
 from .backend_factory import BackendFactory
 from qubo_optimization_wrapper.backend_handler.backends.backend_interface import Backend
 from qubo_optimization_wrapper.hamiltonian_creation.hamiltonian import Hamiltonian
-from qubo_optimization_wrapper.visualization.v_decode_sampleset import (
-    visualize_energies,
-)
 import dimod
 
 # TODO: QUITAR HAMILTONIANO DE LOS ARGUMENTOS DEL OBJETO, NO DEBE DEPENDER DE EL.
 
 
 class ExecutionBackend:
-    def __init__(
-        self, hamiltonian: Hamiltonian, backend_type: str, backend_config: str = None
-    ):
+    def __init__(self, hamiltonian: Hamiltonian, backend_type: str):
         self._hamiltonian = hamiltonian
         self._backend_factory = BackendFactory()
-        self.set_backend(backend_type, backend_config)
         self._current_backend: Backend = None
         self._current_backend_execution_info = None
         self._decoded_sampleset = None
+        self.set_backend(backend_type)
 
-    def set_backend(self, backend_type: str, backend_config):
-        self._current_backend = self._backend_factory.create_backend(
-            backend_type, backend_config
-        )
+    def set_backend(self, backend_type: str):
+        self._current_backend = self._backend_factory.create_backend(backend_type)
         self._current_backend_execution_info = self._current_backend.sample.__doc__
         print(f"Backend cambiado a: {backend_type}")
 
@@ -40,7 +33,7 @@ class ExecutionBackend:
     def get_current_backend_execution_info(self):
         print(f"{self._current_backend_execution_info}")
 
-    def get_decoded_sampleset(self):
+    def get_decoded_sampleset(self) -> dimod.SampleSet:
         if not self._decoded_sampleset:
             return print("Job was not executed in selected backend yet")
         return self._decoded_sampleset
@@ -78,6 +71,3 @@ class ExecutionBackend:
             decoded_samples = model.decode_sampleset(sampleset)
 
         return decoded_samples
-
-    def show_sampleset_distribution_energies(self):
-        visualize_energies(self._hamiltonian)

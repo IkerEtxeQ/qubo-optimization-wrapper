@@ -1,9 +1,7 @@
 import dimod
 from qubo_optimization_wrapper.visualization.v_hamiltonian import (
-    imprimir_resultados_hamiltoniano,
-    asignar_terminos_cuadraticos,
-    asignar_valores_diagonales,
     show_QMatrix,
+    visualize_energies,
 )
 
 
@@ -26,8 +24,14 @@ class Hamiltonian:
     def get_compiled_hamiltonian(self):
         return self._compiled_hamiltonian
 
-    def _show_QMatrix(self, eliminar_bajo_diagonal=True):
+    def show_QMatrix(self, eliminar_bajo_diagonal=True):
         show_QMatrix(self.get_compiled_hamiltonian(), eliminar_bajo_diagonal)
+
+    def show_all_hamiltonian_solutions_energy(self):
+        """Generatel all solutions for Hamiltonian, evaluate solutiona and get energies from bqm. Create a graph asociating energy to solution."""
+        visualize_energies(
+            self._lambda_dict, self._hamiltonian, self._compiled_hamiltonian
+        )
 
 
 class Compiled_Hamiltonian:

@@ -3,8 +3,7 @@ import dimod
 
 
 class Backend(ABC):
-    def __init__(self, backend_config):
-        self._backend_config = backend_config
+    def __init__(self):
         self._sampler = None
 
     @abstractmethod
