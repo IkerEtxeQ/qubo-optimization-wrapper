@@ -23,10 +23,10 @@ lambda_dict = {"lambda_1": 1, "lambda_2": 1}
 hamiltonian = Hamiltonian(H_1R, H_2R, lambda_dict)
 
 hamiltonian.show_QMatrix()
-hamiltonian.show_all_hamiltonian_solutions_energy()
+# hamiltonian.show_all_hamiltonian_solutions_energy()
 
-backend = ExecutionBackend(hamiltonian, "simulated_annealing")
-# backend.get_info_backend_parameters()
+backend = ExecutionBackend("simulated_annealing")
+backend.get_current_backend_execution_info()
 
-backend.submit_job(num_reads=10)
-print(backend.get_decoded_sampleset())
+backend.submit_job(hamiltonian, num_reads=10)
+print(backend.get_sampleset())
