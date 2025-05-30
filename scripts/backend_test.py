@@ -26,7 +26,9 @@ hamiltonian.show_QMatrix()
 # hamiltonian.show_all_hamiltonian_solutions_energy()
 
 backend = ExecutionBackend("simulated_annealing")
-backend.get_current_backend_execution_info()
 
-backend.submit_job(hamiltonian, num_reads=10)
-print(backend.get_sampleset())
+
+backend.print_current_backend_execution_info()
+
+backend.submit_job(hamiltonian)
+print(backend.sampleset.aggregate())
