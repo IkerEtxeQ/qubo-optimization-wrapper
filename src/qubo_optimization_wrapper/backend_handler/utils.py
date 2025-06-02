@@ -1,11 +1,14 @@
 # qubo_optimization_wrapper/backend_handler/utils.py
 import warnings
-from typing import Set, Dict, Any, Tuple  # Corregido Tuple
+from typing import Set, Dict, Any, Tuple
+import time
+from contextlib import contextmanager
+from functools import wraps
 
 
 def separate_params(
     params_to_process: Dict[str, Any], allowed_params_set: Set[str]
-) -> Tuple[Dict[str, Any], Dict[str, Any]]:  # Usar Tuple de typing
+) -> Tuple[Dict[str, Any], Dict[str, Any]]:
     """
     Separates provided parameters into filtered (allowed) and discarded (not allowed) ones.
 
@@ -28,7 +31,7 @@ def issue_parameter_filtering_warning(
     discarded_params: Dict[str, Any],
     allowed_params_set: Set[str],
     final_filtered_params: Dict[str, Any],
-    calling_stacklevel: int = 2,  # Nivel de stack para que la advertencia apunte correctamente
+    calling_stacklevel: int = 2,
 ):
     """
     Formats and issues a UserWarning if any parameters were discarded.
@@ -40,7 +43,7 @@ def issue_parameter_filtering_warning(
     :param calling_stacklevel: Adjusts where the warning message points in the call stack.
     """
     if not discarded_params:
-        return  # No warning needed
+        return
 
     discarded_keys_str = ", ".join(f"'{k}'" for k in sorted(discarded_params.keys()))
 
@@ -62,3 +65,15 @@ def issue_parameter_filtering_warning(
     warning_message = "\n".join(warning_message_parts)
 
     warnings.warn(warning_message, UserWarning, stacklevel=calling_stacklevel)
+
+
+def timeIt(function):
+    @wraps(function)
+    def wrapper(*args, **kwargs):
+        start_time = time.perf_counter()
+        result = function(*args, **kwargs)
+        execution_time = time.perf_counter() - start_time
+        print(f"Tiempo de ejecución externa: {execution_time:.6f} secs")
+        return result
+
+    return wrapper

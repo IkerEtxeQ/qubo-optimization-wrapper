@@ -1,4 +1,3 @@
-# qubo_optimization_wrapper/backend_handler/backend_factory.py
 from typing import Type, Dict, Any
 from qubo_optimization_wrapper.backend_handler.backends import (
     Backend,

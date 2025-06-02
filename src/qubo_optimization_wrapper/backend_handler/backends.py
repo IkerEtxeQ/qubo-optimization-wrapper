@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
 from neal import SimulatedAnnealingSampler
-from typing import Set, Dict, Any
+from typing import Dict, Any
 from qubo_optimization_wrapper.backend_handler.utils import (
     separate_params,
     issue_parameter_filtering_warning,
+    timeIt,
 )
 
 # from dwave.system import DWaveSampler, EmbeddingComposite
@@ -130,9 +131,10 @@ class SimulatedBackend(Backend):
         """
 
         self._sampler = SimulatedAnnealingSampler()
-        self._config_params = config_params
+        self._config_params = self._filter_sampler_params(**config_params)
         print(f"SimulatedBackend inicializado con config: {self._config_params}")
 
+    @timeIt
     def sample(self, bqm: dimod.BinaryQuadraticModel) -> dimod.SampleSet:
         """
         Samples the given BQM using the SimulatedAnnealingSampler.
@@ -151,9 +153,7 @@ class SimulatedBackend(Backend):
         :return: A dimod.SampleSet containing the samples from the simulated annealing process.
 
         """
-
-        filtered_params = self._filter_sampler_params(**self._config_params)
-        return self._sampler.sample(bqm, **filtered_params)
+        return self._sampler.sample(bqm, **self._config_params)
 
     def get_properties(self) -> dict:
         """
@@ -207,7 +207,7 @@ class QPUBackend(Backend):
 
         try:
             self._sampler = None  # EmbeddingComposite(DWaveSampler(**config_kwargs))
-            self._config_params = config_params
+            self._config_params = self._filter_sampler_params(**config_params)
             solver_used = config_params.get(
                 "solver", config_params.get("solver_name", "default/unknown")
             )
@@ -223,6 +223,7 @@ class QPUBackend(Backend):
                 f"No se pudo inicializar DWaveSampler para '{solver_info}': {e}"
             ) from e
 
+    @timeIt
     def sample(self, bqm: dimod.BinaryQuadraticModel) -> dimod.SampleSet:
         """
         Samples the given Binary Quadratic Model (BQM) using the configured D-Wave QPU.
@@ -240,8 +241,7 @@ class QPUBackend(Backend):
         if not self._sampler:
             raise RuntimeError("QPU Sampler is not initialized.")
 
-        filtered_params = self._filter_sampler_params(**self._config_params)
-        return self._sampler.sample(bqm, **filtered_params)
+        return self._sampler.sample(bqm, **self._config_params)
 
     def get_properties(self) -> dict:
         """
